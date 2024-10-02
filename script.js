@@ -1,13 +1,24 @@
+// URL থেকে userid প্যারামিটার নেওয়া
 const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('userId'); // ইউজার আইডি এখানে সংগ্রহ হবে
+const userId = urlParams.get('userid');
 
-fetch(`/user/${userId}`)
-    .then(response => response.json())
+// ইউজার তথ্য ফেচ করা
+fetch(`https://mdalazim0.github.io/TelegramLogin/user/${userId}`) // গিটহাব URL ব্যবহার করুন
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
-        document.getElementById('username').textContent = data.username;
-        document.getElementById('userId').textContent = data.userId;
-        document.getElementById('balance').textContent = `$${data.balance}`;
+        // HTML আইডি অনুযায়ী ডেটা আপডেট করা
+        document.getElementById('username').textContent = data.username || 'N/A';
+        document.getElementById('userId').textContent = data.userId || 'N/A';
+        document.getElementById('balance').textContent = `$${data.balance || 0}`;
     })
     .catch(error => {
         console.error('Error fetching user info:', error);
+        document.getElementById('username').textContent = 'Error loading user info';
+        document.getElementById('userId').textContent = 'N/A';
+        document.getElementById('balance').textContent = '$0';
     });
